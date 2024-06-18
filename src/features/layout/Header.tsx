@@ -7,7 +7,7 @@ import { ModeToggle } from "../theme/MoveToggle"
 export const Header = async () => {
     return (
         <header className="w-full border-b border-border py-1">
-            <Layout className="flex items-center grap-4">
+            <Layout className="grap-4 flex items-center">
                 <div className="flex-1">
                     <Image
                         src="/icon.png"

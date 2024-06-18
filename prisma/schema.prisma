@@ -36,19 +36,7 @@ model Session {
  
   @@map("sessions")
 }
- 
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime? @map("email_verified")
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
- 
-  @@map("users")
-}
- 
+
 model VerificationToken {
   identifier String
   token      String
@@ -56,4 +44,105 @@ model VerificationToken {
  
   @@unique([identifier, token])
   @@map("verificationtokens")
+}
+ 
+// app models
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  plan          Plan      @default(FREE)
+
+  accounts      Account[]
+  sessions      Session[]
+  programs      Program[]
+  dashboards    Dashboard[]
+ 
+  @@map("users")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Plan {
+  FREE
+  PREMIUM
+}
+
+model Movement {
+  id          String   @id @default(uuid())
+  name        String
+  image       String?
+  description String?
+  group       String?
+  preference  String?
+  exercises   Exercise[]
+}
+
+
+model Program {
+  id          String    @id @default(uuid())
+  userId      String
+  name        String
+  image       String?
+  description String?
+  exerciseId  String
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise    Exercise  @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  dashboards  Dashboard[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Exercise {
+  id          String      @id @default(uuid())
+  movementId  String
+  order       String
+  series      String
+  repetitionId String
+
+  movement    Movement    @relation(fields: [movementId], references: [id], onDelete: Cascade)
+  repetition  Repetition  @relation(fields: [repetitionId], references: [id], onDelete: Cascade)
+  programs    Program[]
+}
+
+model Repetition {
+  id            String     @id @default(uuid())
+  repetition    String
+  tempo         String?
+  description   String?
+  rir           String?
+
+  exercise      Exercise[]
+  felts         Felt[]
+}
+
+model Felt {
+  id            String    @id @default(uuid())
+  repetitionId  String
+  rpe           String?
+  comment       String?
+  weight        String
+  recoveryTime  String?
+
+  repetition    Repetition @relation(fields: [repetitionId], references: [id], onDelete: Cascade)
+  dashboards    Dashboard[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Dashboard {
+  id        String  @id @default(uuid())
+  userId    String
+  programId String
+  feltId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  program   Program @relation(fields: [programId], references: [id], onDelete: Cascade)
+  felt      Felt    @relation(fields: [feltId], references: [id], onDelete: Cascade)
 }
