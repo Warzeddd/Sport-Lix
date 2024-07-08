@@ -1,7 +1,11 @@
 "use server"
 
-import { signOut } from "@/auth"
+import { signIn, signOut } from "@/auth/auth"
 
 export const SignOutAction = async () => {
-    await signOut()
+    await signOut();
+}
+
+export const SignInAction = async () => {
+    await signIn();
 }

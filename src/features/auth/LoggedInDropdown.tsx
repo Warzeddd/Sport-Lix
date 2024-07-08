@@ -1,6 +1,6 @@
 "use client"; 
 
-import { signOut } from "@/auth";
+import { signOut } from "@/auth/auth";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { PropsWithChildren } from "react";
 import { SignOutAction } from "./auth.action";
