@@ -55,6 +55,7 @@ model User {
   emailVerified DateTime? @map("email_verified")
   image         String?
   plan          Plan      @default(FREE)
+  stripeCustomerId String?
 
   accounts      Account[]
   sessions      Session[]
@@ -126,70 +127,69 @@ model Program {
 }
 
 model Week {
-  id          String @id @default(uuid())
-  name        String
-  order       String
-  programId   String
-  workoutId   String
+  id         String   @id @default(uuid())
+  name       String
+  order      String
+  programId  String
 
-  program     Program   @relation(fields: [programId], references: [id], onDelete: Cascade)
-  workout     Workout   @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  program    Program  @relation(fields: [programId], references: [id], onDelete: Cascade)
+  workouts   Workout[]
 }
 
 model Workout {
-  id          String @id @default(uuid())
-  name        String
-  exerciseId  String
-  cycleId     String
-  order       String
+  id       String   @id @default(uuid())
+  name     String
+  order    String
+  weekId   String
 
-  exercise    Exercise  @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
-  cycle       Cycle     @relation(fields: [cycleId], references: [id], onDelete: Cascade)
-  weeks       Week[]
+  week     Week     @relation(fields: [weekId], references: [id], onDelete: Cascade)
+  exercises Exercise[]
+  cycles   Cycle[]
 }
 
 model Exercise {
-  id           String @id @default(uuid())
-  name         String
-  order        String
-  seriesId     String
+  id       String   @id @default(uuid())
+  name     String
+  order    String
+  workoutId String
 
-  series       Series     @relation(fields: [seriesId], references: [id], onDelete: Cascade)
-  workouts     Workout[]
+  workout  Workout  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  series   Series[]
 }
 
 model Series {
-  id            String @id @default(uuid())
-  movementId    String
-  order         String
-  seriesCount   String
-  repetitionId  String
+  id           String     @id @default(uuid())
+  movementId   String
+  order        String
+  seriesCount  String
+  exerciseId   String
 
-  movement      Movement   @relation(fields: [movementId], references: [id], onDelete: Cascade)
-  repetition    Repetition @relation(fields: [repetitionId], references: [id], onDelete: Cascade)
-  exercises     Exercise[]
+  movement     Movement   @relation(fields: [movementId], references: [id], onDelete: Cascade)
+  exercise     Exercise   @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  repetitions  Repetition[]
 }
 
 model Repetition {
-  id            String @id @default(uuid())
-  repetition    String
-  tempo         String
-  description   String
-  rir           String
-  recoveryTime  String
+  id           String     @id @default(uuid())
+  repetition   String
+  tempo        String?
+  description  String?
+  rir          String?
+  recoveryTime String?
+  seriesId     String
 
-  series        Series[]
+  series       Series     @relation(fields: [seriesId], references: [id], onDelete: Cascade)
   felt          Felt[]
 }
 
 model Cycle {
-  id            String @id @default(uuid())
-  name          String
-  startDate     DateTime
-  endDate       DateTime
-
-  workouts      Workout[]
+  id          String    @id @default(uuid())
+  name        String
+  startDate   DateTime
+  endDate     DateTime?
+  workouts    Workout[]
 }
+
 
 
 model Felt {

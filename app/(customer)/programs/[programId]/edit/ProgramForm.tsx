@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProgramSchema, ProgramType } from "./program.schema";
@@ -8,10 +8,13 @@ import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { createProgramAction, updateProgramAction } from "./program.action";
 import { toast } from "sonner";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+import { uploadImageAction } from "@/features/upload/upload.action";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Loader2 } from "lucide-react";
 
 export type ProgramFormProps = {
-    defaultValues?: ProgramType
+    defaultValues?: ProgramType;
     programId?: string;
 };
 
@@ -19,37 +22,50 @@ export const ProgramForm = (props: ProgramFormProps) => {
     const form = useZodForm({
         schema: ProgramSchema,
         defaultValues: props.defaultValues,
-    })
+    });
 
     const isCreate = !Boolean(props.defaultValues);
     const router = useRouter();
 
     const mutation = useMutation({
         mutationFn: async (values: ProgramType) => {
-            const {data, serverError} = isCreate ? await createProgramAction(values) : 
-            await updateProgramAction({
-                id: props.programId ?? "-",
-                data: values,
-        });
-            if(serverError || !data) {
+            const { data, serverError } = isCreate 
+                ? await createProgramAction(values) 
+                : await updateProgramAction({
+                    id: props.programId ?? "-",
+                    data: values,
+                });
+            if (serverError || !data) {
                 toast.error(serverError);
                 return;
             }
 
-            toast.success("Program created");
-
-            router.push(`/program/${data.id}`)
+            router.push(`/programs/${data.id}`);
+            router.refresh();
         }
-        
-    })
+    });
+
+    const submitImage = useMutation({
+        mutationFn: async (file: File) => {
+            const formData = new FormData();
+            formData.set("file", file);
+            const { data, serverError } = await uploadImageAction(formData);
+
+            if (!data || serverError) {
+                toast.error(serverError);
+                return;
+            }
+
+            const url = data.url;
+            form.setValue("image", url);
+        }
+    });
 
     return (
         <Card>
             <CardHeader>
                 <CardTitle>
-                    {isCreate
-                        ? "Create product"
-                        : `Edit product ${props.defaultValues?.name}`}
+                    {isCreate ? "Create program" : `Edit program ${props.defaultValues?.name}`}
                 </CardTitle>
             </CardHeader>
             <CardContent>
@@ -57,7 +73,7 @@ export const ProgramForm = (props: ProgramFormProps) => {
                     className="flex flex-col gap-4"
                     form={form}
                     onSubmit={async (values) => {
-                        await mutation.mutateAsync(values)
+                        await mutation.mutateAsync(values);
                     }}>
 
                     <FormField
@@ -84,13 +100,13 @@ export const ProgramForm = (props: ProgramFormProps) => {
                                 <FormControl>
                                     <Input placeholder="Push Pull Leg" {...field} onChange={e => {
                                         const value = e.target.value
-                                        .replaceAll(" ", "-")
-                                        .toLowerCase();
+                                            .replaceAll(" ", "-")
+                                            .toLowerCase();
 
                                         field.onChange(value);
                                     }} />
                                 </FormControl>
-                                <FormDescription>The slug is used in the URL of the program </FormDescription>
+                                <FormDescription>The slug is used in the URL of the program</FormDescription>
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -102,9 +118,38 @@ export const ProgramForm = (props: ProgramFormProps) => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Image</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="url image" {...field} value={field.value ?? ''}  />
-                                </FormControl>
+                                <div className="flex items-center gap-4">
+                                    <FormControl className="flex-1">
+                                        <Input type="file" placeholder="url image" onChange={e => {
+                                            const file = e.target.files?.[0];
+
+                                            if (!file) {
+                                                return;
+                                            }
+
+                                            if (file.size > 1024 * 1024) {
+                                                toast.error("File is too big");
+                                                return;
+                                            }
+
+                                            if (!file.type.includes("image")) {
+                                                toast.error("File is not an image");
+                                                return;
+                                            }
+
+                                            submitImage.mutate(file);
+                                        }} />
+                                    </FormControl>
+                                    {submitImage.isPending ? (
+                        <Loader2 className="h-6 animate-spin" />
+                      ) : null}
+                                    {field.value ? (
+                                        <Avatar className="rounded-sm">
+                                        <AvatarFallback>{field.value[0]}</AvatarFallback>
+                                        <AvatarImage src={field.value} />
+                                      </Avatar>
+                                    ) : null}
+                                </div>
                                 <FormDescription>The URL of your image</FormDescription>
                                 <FormMessage />
                             </FormItem>
@@ -118,7 +163,7 @@ export const ProgramForm = (props: ProgramFormProps) => {
                             <FormItem>
                                 <FormLabel>Description</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="description.." {...field} value={field.value ?? ''}  />
+                                    <Input placeholder="description.." {...field} value={field.value ?? ''} />
                                 </FormControl>
                                 <FormDescription>The description of the program</FormDescription>
                                 <FormMessage />
@@ -126,11 +171,11 @@ export const ProgramForm = (props: ProgramFormProps) => {
                         )}
                     />
 
-                    <Button>
+                    <Button type="submit">
                         {isCreate ? "Create program" : "Save program"}
                     </Button>
                 </Form>
             </CardContent>
         </Card>
-    )
-}
+    );
+};

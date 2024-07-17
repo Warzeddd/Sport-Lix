@@ -1,5 +1,6 @@
 import { requiredCurrentUser } from "@/auth/current-user";
 import { Layout, LayoutTitle } from "@/components/layout";
+import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { prisma } from "@/prisma";
@@ -16,25 +17,38 @@ export default async function RoutePage(props: PageParams<{}>) {
     })
     return (
         <Layout>
-            <LayoutTitle>Program</LayoutTitle>
+            <div className="flex justify-between">
+                <div className="space-y-0.5">
+                    <LayoutTitle>Program</LayoutTitle>
+                </div>
+                <Link
+                    href={`/programs/new`}
+                    className={buttonVariants({ size: "sm", variant: "secondary" })}
+                >
+                    Create
+                </Link>
+            </div>
             <Card className="p-4">
                 {programs.length ? (
                     <Table>
                         <TableHeader>
-                            <TableHead>Name</TableHead>
+                            <TableHead>Name</TableHead><TableHead>Slug</TableHead>
                         </TableHeader>
                         <TableBody>
                             {programs.map((program) => (
                                 <TableRow key={program.id}>
-                                    <TableCell>{program.name}</TableCell>
+                                    <Link href={`/programs/${program.id}`} key={program.id}>
+                                        <TableCell>{program.name}</TableCell>
+                                    </Link>
+                                    <TableCell className="font-mono">{program.slug}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
                 ) : (
                     <Link
-                    href="/program/new" 
-                    className="flex w-full items-center justify-center rounded-md border-2 border-dashed border-primary p-12 transition-colors hover:bg-accent/40">
+                        href="/programs/new"
+                        className="flex w-full items-center justify-center rounded-md border-2 border-dashed border-primary p-12 transition-colors hover:bg-accent/40">
                         Create Program
                     </Link>
                 )}

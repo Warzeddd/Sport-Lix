@@ -1,4 +1,4 @@
-import { Header } from "@/features/layout/Header"
+import { Header } from "@/./features/layout/Header"
 import type { LayoutParams } from "@/types/next"
 
 export default async function RouteLayout(props: LayoutParams<{}>){

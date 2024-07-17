@@ -35,34 +35,3 @@ export const userAction = createSafeActionClient({
     }
 })
 
-// next-safe-action v7
-// class ActionError extends Error {
-//     constructor(message: string) {
-//         super(message);
-//         this.name = "ActionError";
-//     }
-// }
-
-// const handleReturnedServerError = (error: Error) => {
-//     if (error instanceof ActionError) {
-//         return error.message;
-//     } else {
-//         return "An unexpected error occurred";
-//     }
-// }
-
-// // Base client avec gestion des erreurs
-// export const actionClient = createSafeActionClient({
-//     handleReturnedServerError: handleReturnedServerError,
-// });
-
-// // Auth client avec vérification de session et gestion des erreurs
-// export const userAction = actionClient.use(async ({ next, ctx }) => {
-//     const user = await currentUser();
-
-//     if (!user) {
-//         throw new ActionError("You must be logged in");
-//     }
-
-//     return next({ ctx: { user } });
-// });

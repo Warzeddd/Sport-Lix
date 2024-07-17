@@ -4,14 +4,15 @@ import { ActionError, userAction } from "@/safe-action";
 import { ProgramSchema } from "./program.schema";
 import { prisma } from "@/prisma";
 import { z } from "zod";
+import { User } from "@prisma/client";
 
-const verifySlugUniqueness = async (slug: string, productId?: string) => { 
+const verifySlugUniqueness = async (slug: string, programId?: string) => { 
   //verify if slug already exits
   const slugExists = await prisma.program.count({
     where: {
       slug: slug,
-      id: productId ? {
-        not: productId,
+      id: programId ? {
+        not: programId,
       } : undefined,
     },
   });
@@ -37,10 +38,29 @@ const verifySlugUniqueness = async (slug: string, productId?: string) => {
 //     return {data: program};
 //   });
 
+export const VerifyUserPlan = async (user: User) => {
+  if (user.plan === "PREMIUM"){
+    return;
+  }
+
+  const userProgramsCount = await prisma.program.count({
+    where: {
+      userId: user.id,
+    },
+  });
+
+  if(userProgramsCount > 0) {
+    throw new ActionError(
+      "You need to upgrade to premium to create more programs"
+    );
+  }
+};
+
 export const createProgramAction = userAction(
   ProgramSchema,
   async (input, context) => {   
     await verifySlugUniqueness(input.slug)
+    await VerifyUserPlan(context.user);
 
     const program = await prisma.program.create({
       data: {

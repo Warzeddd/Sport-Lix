@@ -1,5 +1,7 @@
-import { User } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import { baseAuth } from "./auth"
+
+const prisma = new PrismaClient();
 
 export const currentUser = async () => {
     const session = await baseAuth();
@@ -22,3 +24,4 @@ export const requiredCurrentUser= async () => {
 
     return user;
 }
+
