@@ -1,5 +1,5 @@
 import { requiredCurrentUser } from "@/auth/current-user";
-import { Layout, LayoutTitle } from "@/components/layout";
+import { Layout, LayoutDescription, LayoutTitle } from "@/components/layout";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -20,6 +20,7 @@ export default async function RoutePage(props: PageParams<{}>) {
             <div className="flex justify-between">
                 <div className="space-y-0.5">
                     <LayoutTitle>Program</LayoutTitle>
+                    <LayoutDescription>Create program to sporty</LayoutDescription>
                 </div>
                 <Link
                     href={`/programs/new`}
@@ -32,7 +33,9 @@ export default async function RoutePage(props: PageParams<{}>) {
                 {programs.length ? (
                     <Table>
                         <TableHeader>
+                            <TableRow>
                             <TableHead>Name</TableHead><TableHead>Slug</TableHead>
+                            </TableRow>
                         </TableHeader>
                         <TableBody>
                             {programs.map((program) => (

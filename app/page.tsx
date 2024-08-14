@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Header } from "@/features/layout/Header";
+import { Header } from "../src/features/layout/Header";
 import Image from "next/image";
 
 export default function Home() {

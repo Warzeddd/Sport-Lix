@@ -2,7 +2,7 @@
 
 import { Layout } from "@/components/layout";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { SigninButton } from "@/features/auth/SigninButton";
+import { SignInButton } from "@/features/auth/SignInButton";
 
 
 export default function RouteError() {
@@ -15,7 +15,7 @@ export default function RouteError() {
                     </CardTitle>
                 </CardHeader>
                 <CardFooter>
-                    <SigninButton />
+                    <SignInButton />
                 </CardFooter>
             </Card>
         </Layout>

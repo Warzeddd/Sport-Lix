@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { PageParams } from "@/types/next";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { WeekForm } from "../../../weeks/WeekForm";
+import { WeekForm } from "../../weeks/WeekForm";
 
 export default async function RoutePage(
     props: PageParams<{ programId: string; }>
@@ -28,7 +28,7 @@ export default async function RoutePage(
         <Layout>
             <LayoutTitle>Edit Program</LayoutTitle>
             <ProgramForm defaultValues={program} programId={program.id} />
-                <WeekForm programId={props.params.programId} />
+                {/* <WeekForm programId={props.params.programId} /> */}
         </Layout>
     );
 }

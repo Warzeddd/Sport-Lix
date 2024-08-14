@@ -93,3 +93,14 @@ export const updateProgramAction = userAction(
   }
 );
 
+export const deleteProgramAction = userAction(
+  z.string(),
+  async (programId, context) => {
+    await prisma.program.delete({
+      where: {
+        id: programId,
+        userId: context.user.id,
+      },
+    });
+  }
+);

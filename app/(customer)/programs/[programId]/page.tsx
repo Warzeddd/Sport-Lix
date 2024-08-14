@@ -15,7 +15,7 @@ import type { PageParams } from "@/types/next";
 import { Link2 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-// import { DeleteButton } from "./DeleteButton";
+import { DeleteButton } from "./DeleteButton";
 
 export default async function RoutePage(
   props: PageParams<{
@@ -61,16 +61,16 @@ export default async function RoutePage(
           >
             Edit
           </Link>
-          {/* <DeleteButton productId={product.id} /> */}
+          <DeleteButton programId={program.id} />
         </div>
       </div>
       <div className="flex gap-4 max-lg:flex-col">
         <Card className="flex-1">
           <CardHeader>
-            <CardTitle>{program.name}</CardTitle>
+            <CardTitle>Details</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col items-start gap-2">
-            <p>Program : {program.slug}</p>
+            <p>Slug : {program.slug}</p>
             <Link
               href={`/r/${program.slug}`}
               className={buttonVariants({
@@ -93,9 +93,9 @@ export default async function RoutePage(
         </Card>
         {/* <Card className="flex-1">
           <CardHeader>
-            <CardTitle>Exercices</CardTitle>
+            <CardTitle>Reviews</CardTitle>
           </CardHeader>
-           <CardContent>
+          <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -104,7 +104,7 @@ export default async function RoutePage(
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {product.reviews.map((review) => (
+                {program.reviews.map((review) => (
                   <TableRow key={review.id}>
                     <Link href={`/reviews/${review.id}`} key={review.id}>
                       <TableCell>{review.name}</TableCell>

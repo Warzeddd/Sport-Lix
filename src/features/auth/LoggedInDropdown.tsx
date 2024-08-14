@@ -56,7 +56,7 @@ export const LoggedInDropdown = (props: LoggedInDropdownProps) => {
         <DropdownMenuItem asChild>
           <Link href="/programs" className="w-full">
             <Square size={16} className="mr-2" />
-            Program
+            Programs
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem

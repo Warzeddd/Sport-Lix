@@ -2,7 +2,7 @@
 
 import { env } from "@/env";
 import { getServerUrl } from "@/get-server-url";
-import { ActionError, userAction } from "@/safe-actions";
+import { ActionError, userAction } from "@/safe-action";
 import { stripe } from "@/stripe";
 import { redirect } from "next/navigation";
 import { z } from "zod";
