@@ -29,8 +29,8 @@ export const ProgramForm = (props: ProgramFormProps) => {
 
     const mutation = useMutation({
         mutationFn: async (values: ProgramType) => {
-            const { data, serverError } = isCreate 
-                ? await createProgramAction(values) 
+            const { data, serverError } = isCreate
+                ? await createProgramAction(values)
                 : await updateProgramAction({
                     id: props.programId ?? "-",
                     data: values,
@@ -39,8 +39,7 @@ export const ProgramForm = (props: ProgramFormProps) => {
                 toast.error(serverError);
                 return;
             }
-
-            router.push(`/programs/${data.id}`);
+            router.push(`/programs/${data.id}/weeks/new`);
             router.refresh();
         }
     });
@@ -141,13 +140,13 @@ export const ProgramForm = (props: ProgramFormProps) => {
                                         }} />
                                     </FormControl>
                                     {submitImage.isPending ? (
-                        <Loader2 className="h-6 animate-spin" />
-                      ) : null}
+                                        <Loader2 className="h-6 animate-spin" />
+                                    ) : null}
                                     {field.value ? (
                                         <Avatar className="rounded-sm">
-                                        <AvatarFallback>{field.value[0]}</AvatarFallback>
-                                        <AvatarImage src={field.value} />
-                                      </Avatar>
+                                            <AvatarFallback>{field.value[0]}</AvatarFallback>
+                                            <AvatarImage src={field.value} />
+                                        </Avatar>
                                     ) : null}
                                 </div>
                                 <FormDescription>The URL of your image</FormDescription>

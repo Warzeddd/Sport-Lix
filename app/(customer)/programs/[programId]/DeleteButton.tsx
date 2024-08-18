@@ -6,16 +6,17 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { deleteProgramAction } from "./edit/program.action";
 
+// Définir le type des props, y compris la fonction deleteAction
 export type DeleteButtonProps = {
-  programId: string;
+  id: string;
+  deleteAction: (id: string) => Promise<{ data?: any; serverError?: string }>;
 };
 
-export const DeleteButton = (props: DeleteButtonProps) => {
+export const DeleteButton = ({ id, deleteAction }: DeleteButtonProps) => {
   const router = useRouter();
   const deleteMutation = useMutation({
-    mutationFn: () => deleteProgramAction(props.programId),
+    mutationFn: () => deleteAction(id),
     onSuccess: ({ data, serverError }) => {
       if (serverError) {
         toast.error(serverError);

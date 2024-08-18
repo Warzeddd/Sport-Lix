@@ -12,30 +12,29 @@ import {
 } from "@/components/ui/table";
 import { prisma } from "@/prisma";
 import type { PageParams } from "@/types/next";
-import { Link2 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { DeleteButton } from "./DeleteButton";
-import { deleteProgramAction } from "./edit/program.action";
+import { DeleteButton } from "../../DeleteButton";
+import { deleteWeekAction } from "./edit/week.action";
 
 export default async function RoutePage(
-  props: PageParams<{
-    programId: string;
-  }>
+  props: PageParams<{ weekId: string , programId: string}>
 ) {
   const user = await requiredCurrentUser();
 
-  const program = await prisma.program.findUnique({
+  const week = await prisma.week.findUnique({
     where: {
-      id: props.params.programId,
-      userId: user.id,
+      id: props.params.weekId,
+      program: {
+        userId: user.id,
+      },
     },
     include: {
-      weeks: true, // Assurez-vous que 'week' est bien inclus
+      workouts: true, // Inclure les entraînements associés à la semaine
     },
   });
 
-  if (!program) {
+  if (!week) {
     notFound();
   }
 
@@ -43,21 +42,21 @@ export default async function RoutePage(
     <Layout>
       <div className="flex justify-between">
         <div className="space-y-0.5">
-          <LayoutTitle>
-            <Link href={`/programs`}>
-              <TableCell>{program.name}</TableCell>
+        <LayoutTitle>
+            <Link href={`../../${props.params.programId}`}>
+              <TableCell>{week.name}</TableCell>
             </Link>
           </LayoutTitle>
         </div>
 
         <div className="flex items-center gap-2">
           <Link
-            href={`/programs/${program.id}/edit`}
+            href={`${week.id}/edit`}
             className={buttonVariants({ size: "sm", variant: "secondary" })}
           >
             Edit
           </Link>
-          <DeleteButton id={program.id} deleteAction={deleteProgramAction} />
+          <DeleteButton id={week.id} deleteAction={deleteWeekAction} />
         </div>
       </div>
       <div className="flex gap-4 max-lg:flex-col">
@@ -66,30 +65,12 @@ export default async function RoutePage(
             <CardTitle>Details</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col items-start gap-2">
-            <p>Slug : {program.slug}</p>
-            <Link
-              href={`/r/${program.slug}`}
-              className={buttonVariants({
-                size: "sm",
-              })}
-            >
-              <Link2 size={16} className="mr-2" />
-              Share week link
-            </Link>
-            <Link
-              href={`/wall/${program.slug}`}
-              className={buttonVariants({
-                size: "sm",
-              })}
-            >
-              <Link2 size={16} className="mr-2" />
-              Wall link
-            </Link>
+            <p>Order: {week.order}</p>
           </CardContent>
         </Card>
         <Card className="flex-1">
           <CardHeader>
-            <CardTitle>Week</CardTitle>
+            <CardTitle>Workouts</CardTitle>
           </CardHeader>
           <CardContent>
             <Table>
@@ -100,23 +81,23 @@ export default async function RoutePage(
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {program.weeks.map((week) => (
-                  <TableRow key={week.id}>
+                {week.workouts.map((workout) => (
+                  <TableRow key={workout.id}>
                     <TableCell>
-                      <Link href={`/programs/${program.id}/weeks/${week.id}`}>
-                        {week.name}
+                      <Link href={`${props.params.weekId}/workouts/${workout.id}`}>
+                        {workout.name}
                       </Link>
                     </TableCell>
-                    <TableCell>{week.order}</TableCell>
+                    <TableCell>{workout.order}</TableCell>
                   </TableRow>
                 ))}
                 <TableCell>
-                  <Link
-                    href={`${props.params.programId}/weeks/new`}
-                    className="rounded-md border-2 border-dashed border-primary transition-colors hover:bg-accent/40">
-                    Create Week
-                  </Link>
-                </TableCell>
+                <Link
+                        href={`${props.params.weekId}/workouts/new`}
+                        className="rounded-md border-2 border-dashed border-primary transition-colors hover:bg-accent/40">
+                        Create Workout
+                    </Link>
+                    </TableCell>
               </TableBody>
             </Table>
           </CardContent>

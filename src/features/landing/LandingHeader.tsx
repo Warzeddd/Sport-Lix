@@ -6,7 +6,6 @@ import Image from "next/image";
 import { useEffect } from "react";
 import { SignInButton } from "../auth/SignInButton";
 import { ModeToggle } from "../theme/MoveToggle";
-import { LoggedInButton } from "../auth/LoggedInButton";
 
 function useBoundedScroll(threshold: number) {
   let { scrollY } = useScroll();
@@ -93,8 +92,7 @@ const AppButton = () => {
   if (session.data?.user) {
     return (
     <div>
-    <a href="/programs">App</a>
-    {/* <LoggedInButton />  */}
+    <a href="/programs">My program</a>
     </div>
     );
   } else {

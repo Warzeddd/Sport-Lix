@@ -4,9 +4,7 @@ import { requiredCurrentUser } from "@/auth/current-user";
 import { prisma } from "@/prisma";
 import { notFound } from "next/navigation";
 import { PageParams } from "@/types/next";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { WeekForm } from "../../weeks/WeekForm";
 
 export default async function RoutePage(
     props: PageParams<{ programId: string; }>
@@ -24,11 +22,11 @@ export default async function RoutePage(
         notFound();
     }
 
+
     return (
         <Layout>
             <LayoutTitle>Edit Program</LayoutTitle>
             <ProgramForm defaultValues={program} programId={program.id} />
-                {/* <WeekForm programId={props.params.programId} /> */}
         </Layout>
     );
 }

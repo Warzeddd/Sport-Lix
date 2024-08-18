@@ -19,7 +19,11 @@ export default async function RoutePage(props: PageParams<{}>) {
         <Layout>
             <div className="flex justify-between">
                 <div className="space-y-0.5">
-                    <LayoutTitle>Program</LayoutTitle>
+                    <LayoutTitle>
+                        <Link href={`/home`}>
+                            <TableCell>Program</TableCell>
+                        </Link>
+                    </LayoutTitle>
                     <LayoutDescription>Create program to sporty</LayoutDescription>
                 </div>
                 <Link
@@ -34,7 +38,7 @@ export default async function RoutePage(props: PageParams<{}>) {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                            <TableHead>Name</TableHead><TableHead>Slug</TableHead>
+                                <TableHead>Name</TableHead><TableHead>Slug</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
