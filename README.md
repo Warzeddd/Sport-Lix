@@ -1,51 +1,53 @@
-# Sport-Lix
+# Sport-Lix : Plateforme SaaS de Planification Athlétique Avancée
 
-# Sport-Lix is an emerging SaaS application designed to create and manage sports programs.
-# The platform aims to cater to experienced coaches and athletes by providing advanced tools
-# for designing training regimens and, in the future, offering comprehensive sports tracking 
-# and performance monitoring.
-# 
-# Please note that the project is currently in the early stages of development and is not even 20% complete.
+Sport-Lix est une application web moderne (SaaS) de planification d'entraînements et de suivi morphologique de niveau athlétique. Elle permet de structurer des programmes sportifs complexes à l'aide d'une architecture relationnelle hautement modulaire.
 
-# Technologies Used
+---
 
-# - Next.js: For building the frontend of the application.
-# - Prisma: For database management and ORM (Object-Relational Mapping).
-# - PostgreSQL: As the database system.
-# - Resend: For managing notifications (setup is complete but not yet credited).
+## 🛠️ Stack Technique & Architecture Logicielle
 
-# Features
+* **Framework** : Next.js (App Router) exploitant pleinement les **React Server Components (RSC)** pour un rendu ultra-rapide et l'optimisation SEO du portail public.
+* **Gestion des Formulaires & Mutations** : Utilisation intensive de **React Server Actions** sécurisés par la bibliothèque `next-safe-action` et validés côté serveur à l'aide de schémas de typage stricts avec **Zod**.
+* **Persistance & ORM** : Base de données relationnelle modélisée sous **Prisma ORM**, permettant des requêtes performantes et des migrations d'infrastructure fluides.
+* **Authentification** : Gestion sécurisée des sessions utilisateur et des workflows d'onboarding via **NextAuth.js** (OAuth & Credentials).
+* **Monétisation (SaaS)** : Intégration de **Stripe Billing** couplée à un point de terminaison de **Webhooks Stripe** pour synchroniser en temps réel les statuts d'abonnements premium.
+* **UI/UX Library** : Composants hautement accessibles (WAI-ARIA) conçus via **Shadcn UI**, **Tailwind CSS** et un système de basculement de thème natif (sombre/clair).
 
-# - Program Creation: Easily design and customize sports training programs tailored to individual needs.
-# - Future Tracking: Planned features to provide tracking and monitoring of sports performance.
+---
 
-# Setup and Installation
+## 📊 Modélisation de Données & Schéma Relationnel
 
-# 1. Clone the repository:
-#    git clone https://github.com/Warzeddd/Sport-Lix.git
+La puissance de la plateforme repose sur une structure de base de données relationnelle complexe et rigoureuse découpée en deux piliers :
 
-# 2. Navigate to the project directory:
-#    cd Sport-Lix
+### 1. Le Moteur de Planification (Hiérarchie d'Entraînement)
+Le schéma de base de données modélise l'architecture sportive selon un emboîtement logique de type parent/enfant :
+$$\text{Programme (Program)} \longrightarrow \text{Semaines (Weeks)} \longrightarrow \text{Séances (Workouts)} \longrightarrow \text{Cycles (Cycles)} \longrightarrow \text{Exercices} \longrightarrow \text{Séries (Series/Reps)}$$
 
-# 3. Install dependencies:
-#    npm install
+Chaque entité possède ses propres contrôles d'accès et Server Actions de mutation (`create`, `edit`, `delete`) garantissant une intégrité transactionnelle totale lors des modifications en cascade.
 
-# 4. Set up environment variables:
-#    - Create a .env file in the root directory.
-#    - Add the required environment variables (refer to .env.example for required keys).
+### 2. Le Moteur Anatomique & Morphologique
+Pour adapter le programme aux particularités physiques de l'utilisateur :
+* **Mouvements & Exercices** : Typés selon les groupes musculaires agonistes et antagonistes ciblés.
+* **Morphologie** : Profil de l'utilisateur stocké en base pour recommander ou restreindre certains angles de travail physiques.
 
-# 5. Run the application:
-#    npm run dev
+---
 
-# Contributing
+## 📂 Organisation du Code Source (Feature-Driven Architecture)
 
-# If you would like to contribute to Sport-Lix, please fork the repository and submit a pull request with your changes.
-# For detailed contribution guidelines, please refer to CONTRIBUTING.md.
+Le projet applique les principes du Clean Code en isolant le code par domaines fonctionnels dans le dossier `src/features` :
 
-# License
-
-# This project is licensed under the MIT License. See LICENSE for details.
-
-# Contact
-
-# For any questions or feedback, please contact calix.hoe@gmail.com or open an issue in the GitHub repository.
+```text
+.
+├── app/                       # Routage Next.js (Dashboard, Landing Page, Portails Clients, API Webhooks)
+├── prisma/                    # Schéma relationnel Prisma et historique des migrations d'infrastructure
+├── src/
+│   ├── auth/                  # Configuration NextAuth.js et utilitaires de contexte utilisateur
+│   ├── components/            # Composants graphiques atomiques d'UI (Shadcn)
+│   ├── features/              # Modules métiers isolés (contenant actions, formulaires et logique locale)
+│   │   ├── auth/              # Boutons de connexion et mutations d'authentification
+│   │   ├── landing/           # Sections dynamiques de la page de vente (Hero, FAQ, Tarifs Stripe)
+│   │   ├── theme/             # Provider de thème d'interface (Light/Dark mode)
+```
+│   │   └── upload/            # Gestion et upload d'assets externes
+│   ├── lib/                   # Utilitaires système (gestion des classes CSS Tailwind, helpers)
+│   └── types/                 # Typages TypeScript globaux, environnements et wrapper Stripe
