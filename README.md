@@ -47,7 +47,6 @@ Le projet applique les principes du Clean Code en isolant le code par domaines f
 │   │   ├── auth/              # Boutons de connexion et mutations d'authentification
 │   │   ├── landing/           # Sections dynamiques de la page de vente (Hero, FAQ, Tarifs Stripe)
 │   │   ├── theme/             # Provider de thème d'interface (Light/Dark mode)
-```
 │   │   └── upload/            # Gestion et upload d'assets externes
 │   ├── lib/                   # Utilitaires système (gestion des classes CSS Tailwind, helpers)
 │   └── types/                 # Typages TypeScript globaux, environnements et wrapper Stripe
